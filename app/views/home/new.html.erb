@@ -1,0 +1,73 @@
+
+<!-- 정보를 받아서 저장하는 폼 -->
+<%= form_for @post, url: {action: "create"} do |f| %>
+    <%= f.text_field :title %>
+    <%= f.text_field :lat, id: 'lat' %>
+    <%= f.text_field :lng, id: 'lng' %>
+    <%= f.submit "create" %>
+<% end %>
+
+<div id="map" style="width:100%;height:350px;"></div>
+<p><em>지도를 클릭해주세요!</em></p> 
+<div id="clickLatlng"></div>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=my_api_key"></script>
+<script>
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = { 
+            center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        };
+    
+    var map = new daum.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+    
+    
+    
+      
+
+    // var imageSrc = 'https://i.pinimg.com/originals/8f/48/74/8f4874e35399b632e7c9f0576a3484b6.jpg'
+    // imageSize = new daum.maps.Size(64, 69), // 마커이미지의 크기입니다
+    // imageOption = {offset: new daum.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+    // var markerImage = new daum.maps.MarkerImage(imageSrc, imageSize, imageOption)   
+    
+    var icon = new daum.maps.MarkerImage(
+        'https://i.pinimg.com/236x/c1/76/f5/c176f5cff0cd14f76b6a79fb8026167c--phone-wallpapers-kakao-friends-wallpaper.jpg',
+        new daum.maps.Size(31, 35),
+        {
+            offset: new daum.maps.Point(16, 34),
+            alt: "마커 이미지 예제",
+            shape: "poly",
+            coords: "1,20,1,9,5,2,10,0,21,0,27,3,30,9,30,20,17,33,14,33"
+        }
+    );
+   
+    // 지도를 클릭한 위치에 표출할 마커입니다
+    var marker = new daum.maps.Marker({ 
+        // 지도 중심좌표에 마커를 생성합니다 
+        position: map.getCenter(),
+        draggable: true,
+        image: icon
+    }); 
+    // 지도에 마커를 표시합니다
+    marker.setMap(map);
+    
+    // 지도에 클릭 이벤트를 등록합니다
+    // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
+    daum.maps.event.addListener(map, 'click', function(mouseEvent) {        
+        
+        // 클릭한 위도, 경도 정보를 가져옵니다 
+        var latlng = mouseEvent.latLng; 
+        
+        // 마커 위치를 클릭한 위치로 옮깁니다
+        marker.setPosition(latlng);
+        
+        var lat = latlng.getLat();
+        var lng = latlng.getLng();
+        
+        console.log(lat);
+        
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
+        
+    });
+</script>
